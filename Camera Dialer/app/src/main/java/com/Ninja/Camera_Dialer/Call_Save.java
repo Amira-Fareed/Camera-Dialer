@@ -3,6 +3,7 @@ package com.Ninja.Camera_Dialer;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -19,6 +21,9 @@ import android.net.Uri;
 import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -276,13 +281,22 @@ public class Call_Save extends AppCompatActivity {
             in.close();
         }
         Log.d("reply is ", Returned_value);
-        if (Returned_value.contains("false"))
+        if (Returned_value.contains("false") ||Returned_value.contains("Unable"))
         {
             dialog.dismiss();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setMessage("Look at this dialog!")
+//                    .setCancelable(false)
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            //do things
+//                        }
+//                    });
+//            AlertDialog alert = builder.create();
+//            alert.show();
 
-            Toast.makeText(this, "Wrong photo , Try Again", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Wrong photo , Try Again", Toast.LENGTH_SHORT).show();
             Intent myIntent = new Intent(getBaseContext(),MainActivity.class);
-            //Log.d("imagefile", file.toString());
             startActivity(myIntent);
 
         }
@@ -403,4 +417,17 @@ public class Call_Save extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.app_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent myIntent = new Intent(getBaseContext(),MainActivity.class);
+        startActivity(myIntent);
+        return super.onOptionsItemSelected(item);
+    }
 }

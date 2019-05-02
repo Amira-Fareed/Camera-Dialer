@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
     public class GenericFileProvider extends FileProvider {}
 
     public void takePicture() {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private void selectImage() {
+        public void selectImage() {
             final CharSequence[] items = { "Take Photo", "Choose from Library",
                     "Cancel" };
 
