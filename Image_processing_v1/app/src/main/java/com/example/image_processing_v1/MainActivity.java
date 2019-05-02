@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private Uri file;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
         ivImage = (ImageView) findViewById(R.id.Logo_pic);
     }
+
 
 
 

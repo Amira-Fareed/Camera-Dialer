@@ -80,19 +80,41 @@ public class Call_Save extends AppCompatActivity {
 
         //// Receive the image file from the main activity
         Uri file;
-
         Intent myintent = getIntent();
         file = myintent.getParcelableExtra("Image_file");
 
-        //System.out.println("sentttt"+file.toString());
+        System.out.println("sentttt"+file.toString());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
+        Bitmap bitmap;
         //// Convert the URI image to bitmap then to string
+        //Log.d("weidth", getString(bitmap.getWidth()));
+        int h ;
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos); //bm is the bitmap object
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),file);
 
+            //Log.d("weidth", getString(bitmap.getWidth()));
+            //System.out.print("width before "+getString(bitmap.getWidth()));
+            //System.out.print("hieght before "+getString(bitmap.getHeight()));
+            //Log.d("weidth", getString(bitmap.getWidth()));
+            //System.out.print("width before "+getString(bitmap.getWidth()));
+            //System.out.print("hieght before "+getString(bitmap.getHeight()));
+            int oldwidth=bitmap.getWidth();
+            int oldheight=bitmap.getHeight();
+            if(oldwidth*oldheight>307200)
+            {
+                float  ratio= (float)oldwidth/oldheight;
+                int newwidth= (int)(ratio*640);
+                System.out.println("newwidth"+newwidth+" old  "+oldwidth + "  " + oldheight);
+                 //System.out.print(newwidth);
+                bitmap = Bitmap.createScaledBitmap(bitmap,newwidth, 640, true);
+            }
+            //bitmap = Bitmap.createScaledBitmap(bitmap,500, 400, true);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos); //bm is the bitmap object
+
+            //System.out.print("width after"+getString(bitmap.getWidth()));
+            //System.out.print("hieght after"+getString(bitmap.getHeight()));
             byte[] byteArrayImage = baos.toByteArray();
             image_string = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
             //Log.d("Image String", image_string);
@@ -101,6 +123,7 @@ public class Call_Save extends AppCompatActivity {
         }
 
         // send the request
+
         //System.out.println("loaaaaad dialog");
         dialog = ProgressDialog.show(Call_Save.this, "", "Loading. Please wait...", true);
         send();
@@ -266,6 +289,16 @@ public class Call_Save extends AppCompatActivity {
             in.close();
         }
         Log.d("reply is ", Returned_value);
+        if (Returned_value.contains("false"))
+        {
+            dialog.dismiss();
+
+            Toast.makeText(this, "Wrong photo , Try Again", Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(getBaseContext(),MainActivity.class);
+            //Log.d("imagefile", file.toString());
+            startActivity(myIntent);
+
+        }
         JsonToArray(Returned_value);
         return conn.getResponseMessage()+"";
 
@@ -337,6 +370,7 @@ public class Call_Save extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+
             //Phone select
             displayNames();
 
@@ -355,7 +389,7 @@ public class Call_Save extends AppCompatActivity {
             //Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
             // http://431858b7.ngrok.io
             //https://arcane-island-63185.herokuapp.com/result
-            new HTTPAsyncTask().execute("http://431858b7.ngrok.io");
+            new HTTPAsyncTask().execute("https://arcane-island-63185.herokuapp.com");
         }
         else
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
