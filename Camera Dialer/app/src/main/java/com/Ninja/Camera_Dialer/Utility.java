@@ -1,4 +1,4 @@
-package com.example.image_processing_v1;
+package com.Ninja.Camera_Dialer;
 
 import android.Manifest;
 import android.annotation.TargetApi;

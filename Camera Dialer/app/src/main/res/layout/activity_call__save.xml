@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context="com.example.image_processing_v1.Call_Save">
+        tools:context="com.Ninja.Camera_Dialer.Call_Save">
 
 
         <LinearLayout

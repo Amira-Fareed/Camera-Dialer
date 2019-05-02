@@ -1,9 +1,8 @@
-package com.example.image_processing_v1;
+package com.Ninja.Camera_Dialer;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,36 +11,24 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+
 import static android.Manifest.permission.CALL_PHONE;
 
-import android.content.Intent;
 import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 

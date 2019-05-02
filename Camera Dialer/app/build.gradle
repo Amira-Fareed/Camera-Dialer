@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.image_processing_v1"
+        applicationId "com.Ninja.Camera_Dialer"
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
