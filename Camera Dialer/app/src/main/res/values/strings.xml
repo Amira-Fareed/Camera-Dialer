@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Image_processing_v1</string>
+    <string name="app_name">Camera Dialer</string>
     <string name="camera_unavailable">camera_unavailable</string>
     <string name="file_save_error">file_save_error</string>
 </resources>
