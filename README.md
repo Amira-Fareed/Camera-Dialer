@@ -12,7 +12,7 @@ The application allowes users to scan phone Numbers and Names easily from Busine
 * **[Back-End:](https://github.com/Amira-Fareed/Camera-Dialer/tree/master/Backend)** in Python 
 ## Backend's Dependencies
 * python 3
-* openCv 4.0.0
+* opencv 4.0.0
 * pytesseract
 ## Video Demo
 **[Click Here](https://github.com)**
