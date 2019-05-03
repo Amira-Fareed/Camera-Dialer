@@ -4,6 +4,7 @@ import numpy as np
 import imutils
 import matplotlib.pyplot as plt
 
+
 def auto_canny(image, sigma=0.33):
     # compute the median of the single channel pixel intensities
     v = np.median(image)
@@ -106,5 +107,32 @@ def get_text_from_image (image):
     return pytesseract.image_to_string(croped_card_image, lang='eng', config = tessdata_dir_config)
 
 #The any() function returns True if any item in an iterable are true, otherwise it returns False.
+def has_number(text):
+    return any(char.isdigit() for char in text)
+    
 
+def is_mail(text):
+    return any(char=="@" for char in text)
 
+def clean_name(text):
+    Valid='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
+    result = ''.join([i for i in text if i in Valid])
+    return result
+
+def clean_number(text):
+    result=''.join([i for i in text if i.isdigit() or i=="O" or i=="o"])
+    return result
+
+def is_phone(text):
+    number= clean_number(text)
+    number=number.replace('O','0')
+    number=number.replace('o','0')
+    index=number.find("01")
+    if(index!=-1 and (len(number))>(index+10)):
+        if(number[index+2]=="0" or number[index+2]=="1" or number[index+2]=="2" or number[index+2]=="5"):
+            return number[index:index+11]
+    index=number.find("02")
+    if(index!=-1 and (len(number))>(index+9)):
+        return number[index:index+10]
+    else:
+        return False  
