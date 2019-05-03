@@ -28,13 +28,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
+
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
-    private ImageView ivImage;
     private String userChoosenTask;
     private Uri file;
-
-
 
 
 
@@ -43,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Clicking on Scan the Card Button
         btnSelect = (Button) findViewById(R.id.button);
         btnSelect.setOnClickListener(new OnClickListener() {
 
@@ -51,26 +50,93 @@ public class MainActivity extends AppCompatActivity {
                 selectImage();
             }
         });
-        ivImage = (ImageView) findViewById(R.id.Logo_pic);
+
+        //Checking For Permissions of Camera and Internal Storage
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
         }
     }
 
 
-
+    //Providing the file in the storage
     public class GenericFileProvider extends FileProvider {}
 
+    //Requesting Permissions depending on the user's choice
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+                    //code for deny
+                }
+                break;
+        }
+    }
+
+
+    //Dialog box for Selecting Camera or Galerry
+    public void selectImage() {
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "Cancel" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result=Utility.checkPermission(MainActivity.this);
+
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask ="Take Photo";
+                    if(result)
+                        cameraIntent();
+
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask ="Choose from Library";
+                    if(result)
+                        galleryIntent();
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    //choose from Gallery
+    private void galleryIntent()
+    {
+
+
+        Intent intent=new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+
+    }
+
+    //Choose from Camera
+    private void cameraIntent()
+    {
+        takePicture();
+    }
+
+    //open Camera and take picture
     public void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         file = FileProvider.getUriForFile(MainActivity.this, BuildConfig.APPLICATION_ID + ".provider",getOutputMediaFile());
-        //fromFile(getOutputMediaFile());
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
 
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
+    //Generating image file after taking picture
     private static File getOutputMediaFile(){
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "CameraDemo");
@@ -87,107 +153,30 @@ public class MainActivity extends AppCompatActivity {
                 "IMG_"+ timeStamp + ".jpg");
     }
 
+    //The Result of the Camera or Gallery Selection
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        @Override
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-            switch (requestCode) {
-                case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if(userChoosenTask.equals("Take Photo"))
-                            cameraIntent();
-                        else if(userChoosenTask.equals("Choose from Library"))
-                            galleryIntent();
-                    } else {
-                        //code for deny
-                    }
-                    break;
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE)
+            {
+                file = data.getData();
+                ImageToString();
+            }
+            else if (requestCode == REQUEST_CAMERA) {
+                ImageToString();
             }
         }
+    }
 
-        public void selectImage() {
-            final CharSequence[] items = { "Take Photo", "Choose from Library",
-                    "Cancel" };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Add Photo!");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    boolean result=Utility.checkPermission(MainActivity.this);
-
-                    if (items[item].equals("Take Photo")) {
-                        userChoosenTask ="Take Photo";
-                        if(result)
-                            cameraIntent();
-
-                    } else if (items[item].equals("Choose from Library")) {
-                        userChoosenTask ="Choose from Library";
-                        if(result)
-                            galleryIntent();
-
-                    } else if (items[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
-        }
-
-        private void galleryIntent()
-        {
-
-
-            Intent intent=new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
-
-        }
-
-        private void cameraIntent()
-        {
-            takePicture();
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == SELECT_FILE)
-                {
-                    file = data.getData();
-                    //ivImage.setImageURI(file);
-                    ImageToString();
-                }
-                else if (requestCode == REQUEST_CAMERA) {
-                    //ivImage.setImageURI(file);
-                    ImageToString();
-                }
-            }
-        }
-
-
-
-
-        private void ImageToString (){
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //Log.d("width",String.valueOf(bm.getWidth()));
-            //Log.d("height",String.valueOf(bm.getHeight()));
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-
-//            byte[] byteArrayImage = baos.toByteArray();
-//            String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-//            Log.d("Image String", encodedImage);
-//            System.out.println(encodedImage.length());
-
-            //Go to the next Activity
-            Intent myIntent = new Intent(getBaseContext(),Call_Save.class);
-            //Log.d("imagefile", file.toString());
-            myIntent.putExtra("Image_file", file);
-            startActivity(myIntent);
-            //System.out.println(encodedImage);
-            //System.out.println(Arrays.toString(byteArrayImage));
-
-        }
+    //passing image file to Call_Save Activity
+    private void ImageToString (){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Intent myIntent = new Intent(getBaseContext(),Call_Save.class);
+        myIntent.putExtra("Image_file", file);
+        startActivity(myIntent);
+    }
 
 
 }
