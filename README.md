@@ -13,6 +13,8 @@ The application allowes users to scan phone Numbers and Names easily from Busine
 ## Backend's Dependencies
 * python 3
 * opencv 4.0.0
+* tesseract
 * pytesseract
+
 ## Video Demo
 **[Click Here](https://github.com)**
