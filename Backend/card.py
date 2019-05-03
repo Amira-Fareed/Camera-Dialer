@@ -1,8 +1,8 @@
+import pytesseract
 import cv2
 import numpy as np
 import imutils
 import matplotlib.pyplot as plt
-
 
 def auto_canny(image, sigma=0.33):
     # compute the median of the single channel pixel intensities
@@ -98,4 +98,13 @@ def detect_card(image):
             warped = four_point_transform(image, screenCnt.reshape(4, 2))
             return warped
     return image
+
+def get_text_from_image (image):
+    croped_card_image=detect_card(image)
+    pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+    tessdata_dir_config = '--tessdata-dir "C:\\Program Files (x86)\\Tesseract-OCR\\tessdata"'
+    return pytesseract.image_to_string(croped_card_image, lang='eng', config = tessdata_dir_config)
+
+#The any() function returns True if any item in an iterable are true, otherwise it returns False.
+
 
