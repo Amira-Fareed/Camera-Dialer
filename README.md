@@ -20,4 +20,4 @@ The application allowes users to scan phone Numbers and Names easily from Busine
 **[Click Here](https://drive.google.com/file/d/13U_bDedSSWpv50RFDHmI9cr_9gPOz3di/view?usp=sharing)**
 
 ## Documentation
-*[Click Here](https://github.com/Amira-Fareed/Camera-Dialer/blob/master/Camera%20Dialer/Camera%20Dialer.pdf)*
+**[Click Here](https://github.com/Amira-Fareed/Camera-Dialer/blob/master/Camera%20Dialer/Camera%20Dialer.pdf)**
