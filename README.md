@@ -17,4 +17,4 @@ The application allowes users to scan phone Numbers and Names easily from Busine
 * pytesseract
 
 ## Video Demo
-**[Click Here](https://github.com)**
+**[Click Here](https://drive.google.com/file/d/13U_bDedSSWpv50RFDHmI9cr_9gPOz3di/view?usp=sharing)**
