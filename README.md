@@ -21,3 +21,10 @@ The application allowes users to scan phone Numbers and Names easily from Busine
 
 ## Documentation
 **[Click Here](https://github.com/Amira-Fareed/Camera-Dialer/blob/master/Camera%20Dialer/Camera%20Dialer.pdf)**
+
+## Team Members
+* Amira Muhammad Fareed  
+* Nourhan Mohamed Saleh
+* Eslam Medhat Mahrous 
+* Basma Saeed Ragab 
+* Eslam Alaa Zaki 
