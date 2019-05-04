@@ -2,6 +2,7 @@ import pytesseract
 import cv2
 import numpy as np
 import imutils
+import base64
 import matplotlib.pyplot as plt
 
 
@@ -136,3 +137,55 @@ def is_phone(text):
         return number[index:index+10]
     else:
         return False  
+def get_phones_and_names(image):
+    output=get_text_from_image(image)
+    content=output.split('\n')
+    info=[]
+    # to remove whitespace characters like `\n` at the end of each line
+    content = [x.strip('\n') for x in content] 
+    #remove empty spaces from a string like '  ' to be '' and 'aaa ' to be 'aaa'
+    content = [y.strip() for y in content]
+    for i in content:
+        if(i!= '' ):
+            info.append(i)
+    phones=[]
+    names=[]
+    for i in info:
+        if(has_number(i)):
+            phone=is_phone(i)
+            if(phone):
+                phones.append(phone)
+        elif(not is_mail(i)):
+            cleaned_name=clean_name(i)
+            cleaned_name_no_space=cleaned_name.replace(' ', '')
+            if(len(cleaned_name_no_space)>2 and len(cleaned_name_no_space)<26 and (len(cleaned_name)-len(cleaned_name_no_space))<5):
+                names.append(cleaned_name)
+    return names,phones
+
+
+def run(image):
+    names,phones=get_phones_and_names(image)
+    if(len(phones)==0):
+        rotated90=np.rot90(image)
+        names,phones=get_phones_and_names(rotated90)
+    if(len(phones)==0):
+        rotated180=np.rot90(image,2)
+        names,phones=get_phones_and_names(rotated180)
+    if(len(phones)==0):
+        rotated270=np.rot90(image,3)
+        names,phones=get_phones_and_names(rotated270)
+    if(len(phones)==0):
+        return False,False
+    return names,phones
+
+
+def stringToImage(imgdata):
+    imgdata = imgdata.replace('\n', '')
+    imgdata=imgdata.replace(' ', '')
+    imgdata = bytes(imgdata, 'utf-8')
+    imgdata = base64.b64decode(imgdata)
+    nparr = np.fromstring(imgdata, np.uint8)
+    return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+
+
