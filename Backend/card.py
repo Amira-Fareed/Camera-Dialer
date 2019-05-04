@@ -3,7 +3,14 @@ import cv2
 import numpy as np
 import imutils
 import base64
-import matplotlib.pyplot as plt
+from flask import Flask
+from flask import jsonify
+from flask import request
+pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/bin/tesseract'
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
 def auto_canny(image, sigma=0.33):
@@ -67,7 +74,7 @@ def four_point_transform(image, pts):
     return warped
 
 def detect_card(image):
-    image_gray= cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image_gray = cv2.GaussianBlur(image_gray, (5, 5), 0)
     edges=auto_canny(image_gray)
     
@@ -100,12 +107,9 @@ def detect_card(image):
             warped = four_point_transform(image, screenCnt.reshape(4, 2))
             return warped
     return image
-
 def get_text_from_image (image):
     croped_card_image=detect_card(image)
-    pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
-    tessdata_dir_config = '--tessdata-dir "C:\\Program Files (x86)\\Tesseract-OCR\\tessdata"'
-    return pytesseract.image_to_string(croped_card_image, lang='eng', config = tessdata_dir_config)
+    return pytesseract.image_to_string(croped_card_image)
 
 #The any() function returns True if any item in an iterable are true, otherwise it returns False.
 def has_number(text):
@@ -137,6 +141,7 @@ def is_phone(text):
         return number[index:index+10]
     else:
         return False  
+ 
 def get_phones_and_names(image):
     output=get_text_from_image(image)
     content=output.split('\n')
@@ -161,15 +166,13 @@ def get_phones_and_names(image):
             if(len(cleaned_name_no_space)>2 and len(cleaned_name_no_space)<26 and (len(cleaned_name)-len(cleaned_name_no_space))<5):
                 names.append(cleaned_name)
     return names,phones
-
-
 def run(image):
     names,phones=get_phones_and_names(image)
     if(len(phones)==0):
         rotated90=np.rot90(image)
         names,phones=get_phones_and_names(rotated90)
     if(len(phones)==0):
-        rotated180=np.rot90(image,2)
+        rotated180=np.rot90(image,2)   
         names,phones=get_phones_and_names(rotated180)
     if(len(phones)==0):
         rotated270=np.rot90(image,3)
@@ -187,5 +190,21 @@ def stringToImage(imgdata):
     nparr = np.fromstring(imgdata, np.uint8)
     return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
+#code which helps initialize our server
+app = Flask(__name__) 
+@app.route('/', methods=['GET'])
+def getResult():
+	return "<h3> NINJA TEAM	</h3>"
+@app.route('/', methods=['POST'])
+def result():
+    img=request.get_json()
+    print("0")
+    imgdata=img["image"]
+    print("1")
+    image=stringToImage(imgdata)
+    print("2")
+    names,phones=run(image)
+    print("3")
+    return jsonify({"names":names,"phones":phones})
 
 
